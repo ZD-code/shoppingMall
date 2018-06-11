@@ -10,36 +10,38 @@
 </template>
 
 <script>
-import 'swiper/dist/css/swiper.css'
-import { swiper, swiperSlide} from 'vue-awesome-swiper'
-    export default {
-        data () {
-            return {
-                slide: [1,2,3,4,5,6],
-                swiperOptions:{
-                    pagination:{
-                        el: '.swiper-pagination'
-                    }
-                }
-            }
-        },
-        components:{
-            swiper,
-            swiperSlide
+import "swiper/dist/css/swiper.css";
+import { swiper, swiperSlide } from "vue-awesome-swiper";
+export default {
+  data() {
+    return {
+      slide: [1, 2, 3, 4, 5, 6],
+      swiperOptions: {
+        // loop:true,
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true
         }
-    }
+      }
+    };
+  },
+  components: {
+    swiper,
+    swiperSlide
+  }
+};
 </script>
 
 <style scoped>
-.swiper{
-    height: 7rem;
-    border-top: 1px solid #cccccc;
-    border-bottom: 1px solid #cccccc;
+.swiper {
+  height: 7rem;
+  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
 }
-.swiper-slide{
-    height: 4rem;
-    text-align: center;
-    padding-top: 3rem;
-    border-bottom: 1px solid #cccccc;
+.swiper-slide {
+  height: 4rem;
+  text-align: center;
+  padding-top: 3rem;
+  border-bottom: 1px solid #cccccc;
 }
 </style>

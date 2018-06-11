@@ -1,62 +1,79 @@
 <template>
-    <div class="index-conatiner">
-        <van-row class="search-bar">
-            <van-col span="3">
-                <img :src='locationIcon' class="location-icon">
-                </van-col>
-            <van-col span="16">
-                <input type="text" class="search-input">
-                </van-col>
-            <van-col span="5">
-                <van-button size="mini" class="search-btn">搜索</van-button>
-                </van-col>
-        </van-row>
-<div class="swiper-area">
-    <van-swipe :autoplay="3000">
+  <div class="index-conatiner">
+    <van-row class="search-bar">
+      <van-col span="3">
+        <img :src='locationIcon' class="location-icon">
+      </van-col>
+      <van-col span="16">
+        <input type="text" class="search-input">
+      </van-col>
+      <van-col span="5">
+        <van-button size="mini" class="search-btn">搜索</van-button>
+      </van-col>
+    </van-row>
+    <div class="swiper-area">
+      <van-swipe :autoplay="3000">
         <van-swipe-item v-for="(banner,index) in bannerPicArray" :key="index">
-            <img v-lazy="banner.imageUrl" width="100%"/>
+          <img v-lazy="banner.imageUrl" width="100%" />
         </van-swipe-item>
-    </van-swipe>
-</div>
-<div class="type-bar">
-    <div v-for="(cate,index) in category" :key="index">
-        <img v-lazy="cate.image">
-        <span>{{cate.mallCategoryName}}</span>
+      </van-swipe>
     </div>
-</div>
-<div class="advertes">
-    <div v-for="(adv,index) in advertes" :key="index">
+    <div class="type-bar">
+      <div v-for="(cate,index) in category" :key="index">
+        <img v-lazy="cate[index].image">
+        <span>{{cate[index].mallCategoryName}}</span>
+      </div>
+    </div>
+    <div class="advertes">
+      <div v-for="(adv,index) in advertes" :key="index">
         <a href="javascript:;">
-            <img v-lazy="adv.PICTURE_ADDRESS" alt="广告" width="100%">
+          <img v-lazy="adv.PICTURE_ADDRESS" alt="广告" width="100%">
         </a>
+      </div>
     </div>
-</div>
-<div class="recommend-area">
-    <div class="recommend-title">商品推荐</div>
-    <div class="recommend-body">
+    <div class="recommend-area">
+      <div class="recommend-title">商品推荐</div>
+      <div class="recommend-body">
         <swiper :options="swiperOption">
-            <swiper-slide v-for="(goods, index) in recommends" :key="index">
-                <div class="recommend-list">
-                    <img :src="goods.image" :alt="goods.goodsName" width="33%">
-                    <div class="hot-icon"><img :src="hotIcon" width="100%"></div>
-                    <p class="now-price">￥{{goods.mallPrice}}</p>
-                    <p class="old-price">￥{{goods.price}}</p>
-                </div>
-            </swiper-slide>
+          <swiper-slide v-for="(goods, index) in recommends" :key="index">
+            <div class="recommend-list">
+              <img :src="goods.image" :alt="goods.goodsName" width="33%">
+              <div class="hot-icon"><img :src="hotIcon" width="100%"></div>
+              <p class="now-price">￥{{goods.mallPrice| moneyFilter}}</p>
+              <p class="old-price">￥{{goods.price|moneyFilter}}</p>
+            </div>
+          </swiper-slide>
         </swiper>
+      </div>
     </div>
-</div>
-<div>
+    <!-- <div>
     <swiperDefault></swiperDefault>
-</div>
+</div> -->
+
+    <floorComponent :floorData="floor1" :floorTitle="floorName.floor1"></floorComponent>
+
+    <floorComponent :floorData="floor2" :floorTitle="floorName.floor2"></floorComponent>
+
+    <floorComponent :floorData="floor3" :floorTitle="floorName.floor3"></floorComponent>
+
+    <div class="hot-area">
+      <div class="hot-title">热卖商品</div>
+      <div class="hot-goods">
+
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
 import "swiper/dist/css/swiper.css";
 import axios from "axios";
 import { swiper, swiperSlide } from "vue-awesome-swiper";
-import swiperDefault from '@/swiper/swiperDefault'
+import swiperDefault from "@/swiper/swiperDefault";
+
+import floorComponent from "@/components/component/floorCOmponent";
+
+import { toMoney } from "@/filter/moneyFilter";
 export default {
   data() {
     return {
@@ -69,60 +86,102 @@ export default {
       swiperOption: {
         slidesPerview: 3,
         centeredSlides: true
-      }
+      },
+      floorName: "",
+      floor1: [],
+      floor2: [],
+      floor3: [],
+      hotGoods: []
     };
   },
   components: {
     swiper,
     swiperSlide,
-    swiperDefault
+    swiperDefault,
+    floorComponent
   },
   methods: {},
+  filters: {
+    moneyFilter(money) {
+      return toMoney(money);
+    }
+  },
   created() {
-    axios({
-      url:
-        "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/getIndexBanner",
-      method: "get"
-    })
-      .then(res => {
+    // axios({
+    //   url:
+    //     "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/getIndexBanner",
+    //   method: "get"
+    // })
+    //   .then(res => {
+    //     if (res.status === 200) {
+    //       this.bannerPicArray = res.data;
+    //     }
+    //   })
+    //   .catch(error => {}),
+      // axios({
+      //   url:
+      //     "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/indexClassify",
+      //   method: "get"
+      // })
+      //   .then(res => {
+      //     if (res.status === 200) {
+      //       this.category = res.data;
+      //     }
+      //   })
+      //   .catch(error => {}),
+      // axios({
+      //   url:
+      //     "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/advertes",
+      //   method: "get"
+      // })
+      //   .then(res => {
+      //     if (res.status === 200) {
+      //       this.advertes = res.data;
+      //     }
+      //   })
+      //   .catch(error => {}),
+      // axios({
+      //   url:
+      //     "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/recommend",
+      //   method: "get"
+      // })
+      //   .then(res => {
+      //     if (res.status === 200) {
+      //       this.recommends = res.data;
+      //     }
+      //   })
+      //   .catch(error => {}),
+      // axios({
+      //   url:
+      //     "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/floor",
+      //   method: "get"
+      // }).then(res => {
+      //   if (res.status === 200) {
+      //     this.floor1 = res.data.floor1;
+      //     this.floor2 = res.data.floor2;
+      //     this.floor3 = res.data.floor3;
+      //     this.floorName = res.data.floorName;
+      //   }
+      // }).catch( err => {} ),
+      axios({
+        url:
+          "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall",
+        method: "get"
+      }).then(res => {
         if (res.status === 200) {
-          this.bannerPicArray = res.data;
+          let resData = res.data.data;
+
+          this.bannerPicArray = resData.slides;
+           this.category = resData.category;
+           this.advertes = resData.advertes;
+           this.recommends = resData.recommends;
+           this.floor1 = resData.floor1;
+          this.floor2 = resData.floor2;
+          this.floor3 = resData.floor3;
+          this.floorName = resData.floorName;
+
         }
-      })
-      .catch(error => {}),
-      axios({
-        url:
-          "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/indexClassify",
-        method: "get"
-      })
-        .then(res => {
-          if (res.status === 200) {
-            this.category = res.data;
-          }
-        })
-        .catch(error => {}),
-      axios({
-        url:
-          "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/advertes",
-        method: "get"
-      })
-        .then(res => {
-          if (res.status === 200) {
-            this.advertes = res.data;
-          }
-        })
-        .catch(error => {}),
-      axios({
-        url:
-          "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/recommend",
-        method: "get"
-      })
-        .then(res => {
-          if (res.status === 200) {
-            this.recommends = res.data;
-          }
-        })
-        .catch(error => {});
+      }).catch( err => {} );
   }
 };
 </script>
@@ -202,19 +261,26 @@ export default {
   border-top: 1px solid #eeeeee;
   overflow: hidden;
 }
-.recommend-list{
-    position: relative;
-    width:100%;
-    box-sizing: border-box;
-    border-right:1px solid #eeeeee;
-    font-size:12px;
-    text-align: center;
+.recommend-list {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  border-right: 1px solid #eeeeee;
+  font-size: 12px;
+  text-align: center;
 }
-.hot-icon{
-    position:absolute;
-    top:0;
-    bottom:0;
-    right:0;
-    margin:auto;
+.hot-icon {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
 }
+
+.hot-area{
+      text-align: center;
+      font-size:14px;
+      height: 1.8rem;
+      line-height:1.8rem;
+  }
 </style>

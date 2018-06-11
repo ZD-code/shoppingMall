@@ -15,4 +15,7 @@ export default {
   margin:0;
   padding:0;
 }
+img{
+  display: inline-block;
+}
 </style>
