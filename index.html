@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+    <title>vuekoa2</title>
+</head>
+
+<body>
+    <script>
+        function setHtml() {
+            var _width = document.documentElement.clientWidth || document.body.clientWidth;
+            if (_width > 750) {
+                _width = 750;
+            }
+            var htmlDom = document.querySelectorAll('html')[0];
+            htmlDom.style.fontSize = _width / 20 + 'px';
+        }
+        setHtml();
+    </script>
+
+    <div id="app"></div>
+
+</body>
+
+</html>
