@@ -14,14 +14,14 @@
     <div class="swiper-area">
       <van-swipe :autoplay="3000">
         <van-swipe-item v-for="(banner,index) in bannerPicArray" :key="index">
-          <img v-lazy="banner.imageUrl" width="100%" />
+          <img v-lazy="banner.image" width="100%" />
         </van-swipe-item>
       </van-swipe>
     </div>
     <div class="type-bar">
       <div v-for="(cate,index) in category" :key="index">
-        <img v-lazy="cate[index].image">
-        <span>{{cate[index].mallCategoryName}}</span>
+        <img v-lazy="cate.image">
+        <span>{{cate.mallCategoryName}}</span>
       </div>
     </div>
     <div class="advertes">
@@ -46,9 +46,6 @@
         </swiper>
       </div>
     </div>
-    <!-- <div>
-    <swiperDefault></swiperDefault>
-</div> -->
 
     <floorComponent :floorData="floor1" :floorTitle="floorName.floor1"></floorComponent>
 
@@ -56,12 +53,15 @@
 
     <floorComponent :floorData="floor3" :floorTitle="floorName.floor3"></floorComponent>
 
-    <div class="hot-area">
-      <div class="hot-title">热卖商品</div>
-      <div class="hot-goods">
 
-      </div>
+    <div class="hotGoods-area">
+      <van-row gutter="20">
+      <van-col span="12" v-for="(item, index) in hotGoods" :key="index">
+        <goods-info :goodsImage="item.image" :goodsName="item.name" :goodsPrice="item.price"></goods-info>
+      </van-col>
+    </van-row>
     </div>
+
   </div>
 </template>
 
@@ -69,11 +69,11 @@
 import "swiper/dist/css/swiper.css";
 import axios from "axios";
 import { swiper, swiperSlide } from "vue-awesome-swiper";
-import swiperDefault from "@/swiper/swiperDefault";
-
 import floorComponent from "@/components/component/floorCOmponent";
-
+import goodsInfo from "@/components/component/goodsInfoComponent";
 import { toMoney } from "@/filter/moneyFilter";
+
+import url from '@/serviceAPI.config.js'
 export default {
   data() {
     return {
@@ -97,8 +97,8 @@ export default {
   components: {
     swiper,
     swiperSlide,
-    swiperDefault,
-    floorComponent
+    floorComponent,
+    goodsInfo
   },
   methods: {},
   filters: {
@@ -107,81 +107,26 @@ export default {
     }
   },
   created() {
-    // axios({
-    //   url:
-    //     "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/getIndexBanner",
-    //   method: "get"
-    // })
-    //   .then(res => {
-    //     if (res.status === 200) {
-    //       this.bannerPicArray = res.data;
-    //     }
-    //   })
-    //   .catch(error => {}),
-      // axios({
-      //   url:
-      //     "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/indexClassify",
-      //   method: "get"
-      // })
-      //   .then(res => {
-      //     if (res.status === 200) {
-      //       this.category = res.data;
-      //     }
-      //   })
-      //   .catch(error => {}),
-      // axios({
-      //   url:
-      //     "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/advertes",
-      //   method: "get"
-      // })
-      //   .then(res => {
-      //     if (res.status === 200) {
-      //       this.advertes = res.data;
-      //     }
-      //   })
-      //   .catch(error => {}),
-      // axios({
-      //   url:
-      //     "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/recommend",
-      //   method: "get"
-      // })
-      //   .then(res => {
-      //     if (res.status === 200) {
-      //       this.recommends = res.data;
-      //     }
-      //   })
-      //   .catch(error => {}),
-      // axios({
-      //   url:
-      //     "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall/floor",
-      //   method: "get"
-      // }).then(res => {
-      //   if (res.status === 200) {
-      //     this.floor1 = res.data.floor1;
-      //     this.floor2 = res.data.floor2;
-      //     this.floor3 = res.data.floor3;
-      //     this.floorName = res.data.floorName;
-      //   }
-      // }).catch( err => {} ),
-      axios({
-        url:
-          "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall",
-        method: "get"
-      }).then(res => {
+    axios({
+      url:
+        "https://www.easy-mock.com/mock/5b19eb8c966c7b5e64d9cb71/shoppingMall",
+      method: "get"
+    })
+      .then(res => {
         if (res.status === 200) {
           let resData = res.data.data;
-
           this.bannerPicArray = resData.slides;
-           this.category = resData.category;
-           this.advertes = resData.advertes;
-           this.recommends = resData.recommends;
-           this.floor1 = resData.floor1;
+          this.category = resData.category;
+          this.advertes = resData.advertes;
+          this.recommends = resData.recommend;
+          this.floor1 = resData.floor1;
           this.floor2 = resData.floor2;
           this.floor3 = resData.floor3;
           this.floorName = resData.floorName;
-
+          this.hotGoods = resData.hotGoods;
         }
-      }).catch( err => {} );
+      })
+      .catch(err => {});
   }
 };
 </script>
@@ -277,10 +222,9 @@ export default {
   margin: auto;
 }
 
-.hot-area{
-      text-align: center;
-      font-size:14px;
-      height: 1.8rem;
-      line-height:1.8rem;
-  }
+.hotGoods-area{
+  width:100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
 </style>
